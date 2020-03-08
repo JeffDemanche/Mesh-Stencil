@@ -440,7 +440,6 @@ MeshAdjacencyList MeshAdjacencyList::subdivide()
 Matrix4f MeshAdjacencyList::faceQ(shared_ptr<Face> face)
 {
     Vector3f Q_normal = faceNormal(face).normalized();
-    // TODO awaiting piazza answer about choosing p.
     Vector3f p = getVertex(face.get()->getVerts()[0])->getPosition();
     float a = Q_normal.x();
     float b = Q_normal.y();
@@ -512,6 +511,7 @@ MeshAdjacencyList MeshAdjacencyList::simplify(int vertsToRemove)
     for (shared_ptr<Face> face : newList._faces) {
         // Calculate initial Q for face
         faceQs[face] = newList.faceQ(face);
+        count++;
     }
 
     unordered_map<Vertex*, Matrix4f> vertQs = unordered_map<Vertex*, Matrix4f>();
@@ -521,7 +521,6 @@ MeshAdjacencyList MeshAdjacencyList::simplify(int vertsToRemove)
         // Calculate initial Q for every vertex
         vertQs[newList.getVertex(vert.first)] = newList.vertQ(faceQs, vert.second);
         v++;
-        cout << "Vert: " << v << endl;
     }
 
     // Set of edge-cost pairs, where each edge is a pair of vertices. Parameterized by a comparator that orders based on cost.
@@ -567,8 +566,6 @@ MeshAdjacencyList MeshAdjacencyList::simplify(int vertsToRemove)
 
 
         Vertex* k = newList.edgeCollapse(i, j, false);
-
-        cout << "New Vert: " << k->getId() << endl;
 
         Vector3f newPosition = edgeMinCost({i, j}, vertQs).second;
         k->setPosition(newPosition);
