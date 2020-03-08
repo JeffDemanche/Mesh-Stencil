@@ -5,6 +5,8 @@
 
 #include <Eigen/StdVector>
 
+#include "meshadjacencylist.h"
+
 EIGEN_DEFINE_STL_VECTOR_SPECIALIZATION(Eigen::Matrix2f)
 EIGEN_DEFINE_STL_VECTOR_SPECIALIZATION(Eigen::Matrix3f)
 EIGEN_DEFINE_STL_VECTOR_SPECIALIZATION(Eigen::Matrix3i)
@@ -18,9 +20,13 @@ public:
     void loadFromFile(const std::string &filePath);
     void saveToFile(const std::string &filePath);
 
+    MeshAdjacencyList buildAdjacencyList();
+    void initFromAdjacencyList(MeshAdjacencyList al);
+
 private:
     std::vector<Eigen::Vector3f> _vertices;
     std::vector<Eigen::Vector3i> _faces;
+
 };
 
 #endif // MESH_H

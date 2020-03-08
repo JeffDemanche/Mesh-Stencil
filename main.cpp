@@ -52,19 +52,32 @@ int main(int argc, char *argv[])
 
     Mesh m;
     m.loadFromFile(infile.toStdString());
+    MeshAdjacencyList adjacencyList = m.buildAdjacencyList();
+
+    std::cout << "MAL " << adjacencyList.numFaces() << " faces and " << adjacencyList.numVertices() << " vertices" << std::endl;
 
     auto t0 = high_resolution_clock::now();
     // TODO
     // Convert the mesh into your own data structure
 
+
     // TODO
     // Implement the operations
     if (method == "subdivide"){
-        //TODO
+        int iterations = args[3].toInt();
+        for (int i = 0; i < iterations; i++) {
+            adjacencyList = adjacencyList.subdivide();
+        }
+        m.initFromAdjacencyList(adjacencyList);
     } else if (method == "simplify"){
-        //TODO
+        int toRemove = args[3].toInt();
+        adjacencyList = adjacencyList.simplify(toRemove);
+        m.initFromAdjacencyList(adjacencyList);
     } else if (method == "remesh"){
-        //TODO
+        int iterations = args[3].toInt();
+        float smoothingWeight = args[4].toFloat();
+        adjacencyList = adjacencyList.remesh(iterations, smoothingWeight);
+        m.initFromAdjacencyList(adjacencyList);
     } else if (method == "denoise") {
         //TODO
     } else {
@@ -74,12 +87,10 @@ int main(int argc, char *argv[])
     auto t1 = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(t1-t0).count();
 
-    cout << "Execution takes: " << duration << " milliseconds." <<endl;
-    // TODO
-    // Convert your datastructure back to the basic format
-
     ////////////////////////////////////////////////////////////////////////////////
     m.saveToFile(outfile.toStdString());
+
+    cout << "Execution takes: " << duration << " milliseconds." <<endl;
 
     a.exit();
 }

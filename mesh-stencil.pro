@@ -18,10 +18,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 QMAKE_CXXFLAGS += -msse2
 
 SOURCES += main.cpp \
-    mesh.cpp
+    mesh.cpp \
+    meshadjacencylist.cpp
 
 HEADERS += \
     mesh.h \
+    meshadjacencylist.h \
     util/tiny_obj_loader.h \
     Eigen/Cholesky \
     Eigen/CholmodSupport \

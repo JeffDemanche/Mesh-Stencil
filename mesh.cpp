@@ -47,7 +47,7 @@ void Mesh::loadFromFile(const std::string &filePath)
             for(size_t v = 0; v < fv; v++) {
                 tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
 
-		face[v] = idx.vertex_index;
+                face[v] = idx.vertex_index;
 
             }
             _faces.push_back(face);
@@ -58,7 +58,22 @@ void Mesh::loadFromFile(const std::string &filePath)
     for(size_t i = 0; i < attrib.vertices.size(); i += 3) {
 	_vertices.emplace_back(attrib.vertices[i], attrib.vertices[i + 1], attrib.vertices[i + 2]);
     }
+
     std::cout << "Loaded " << _faces.size() << " faces and " << _vertices.size() << " vertices" << std::endl;
+}
+
+MeshAdjacencyList Mesh::buildAdjacencyList()
+{
+    return MeshAdjacencyList(_vertices, _faces);
+}
+
+void Mesh::initFromAdjacencyList(MeshAdjacencyList al)
+{
+    vector<Vector3f> verts = vector<Vector3f>();
+    vector<Vector3i> faces = vector<Vector3i>();
+    al.buildFacesVerts(&verts, &faces);
+    _vertices = verts;
+    _faces = faces;
 }
 
 void Mesh::saveToFile(const std::string &filePath)
